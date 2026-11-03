@@ -70,7 +70,13 @@
 <body>
 <main>
   <h1><img src="/logo.webp" width="720" height="567" alt="Pepper Hill Studio"></h1>
-  <a class="contact" href="mailto:marshall@pepperhillstudio.com">Contact</a>
+  <a class="contact" id="contact" href="#contact">Contact</a>
 </main>
+<script>
+  document.getElementById("contact").addEventListener("click", function (e) {
+    e.preventDefault();
+    window.location.href = "mailto:" + ["hello", "pepperhillstudio.com"].join("@");
+  });
+</script>
 </body>
 </html>
