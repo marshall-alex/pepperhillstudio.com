@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pepper Hill Studio</title>
+<meta name="description" content="Pepper Hill Studio: video production, event production, and creative consulting.">
+<meta name="theme-color" content="#F7F8F3">
+<meta name="color-scheme" content="light">
+<link rel="canonical" href="https://pepperhillstudio.com/">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://pepperhillstudio.com/">
+<meta property="og:title" content="Pepper Hill Studio">
+<meta property="og:description" content="Video production, event production, and creative consulting.">
+<meta property="og:image" content="https://pepperhillstudio.com/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  :root {
+    --paper: #F7F8F3;
+    --forest: #294634;
+    --forest-deep: #1F3628;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: var(--paper);
+    color: var(--forest);
+    font-family: var(--serif);
+    -webkit-font-smoothing: antialiased;
+  }
+  main {
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(28px, 5vh, 44px);
+    padding: 32px max(20px, env(safe-area-inset-right)) 40px max(20px, env(safe-area-inset-left));
+  }
+  h1 { margin: 0; line-height: 0; }
+  h1 img {
+    display: block;
+    width: min(360px, 74vw);
+    height: auto;
+  }
+  .contact {
+    display: inline-block;
+    padding: 13px 30px;
+    border: 1.5px solid var(--forest);
+    border-radius: 999px;
+    color: var(--forest);
+    font-size: 13px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background-color .2s ease, color .2s ease;
+  }
+  .contact:hover { background: var(--forest); color: var(--paper); }
+  .contact:active { background: var(--forest-deep); border-color: var(--forest-deep); color: var(--paper); }
+  .contact:focus-visible { outline: 2px solid var(--forest); outline-offset: 4px; }
+  @media (prefers-reduced-motion: reduce) { .contact { transition: none; } }
+</style>
+</head>
+<body>
+<main>
+  <h1><img src="/logo.webp" width="720" height="567" alt="Pepper Hill Studio"></h1>
+  <a class="contact" href="mailto:marshall@pepperhillstudio.com">Contact</a>
+</main>
+</body>
+</html>
