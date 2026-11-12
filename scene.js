@@ -11,6 +11,7 @@
   var logoEl = document.querySelector(".logo");
   var contact = document.getElementById("contact");
   var hint = document.getElementById("hint");
+  var loginEl = document.getElementById("login"), loginP = 0;   // loginP: 0 closed, 1 fully open
   var calm = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   function fail() { cancelAnimationFrame(raf); root.classList.remove("fx"); root.style.cssText = ""; }
@@ -227,6 +228,12 @@
     sunRy = hz - Math.max(discR + 18, H * 0.075);
     var rnd = seeded(104729);
     stars = [];
+    // The client login form sits in the middle of the canopy (or mid-screen when the tree is too small to hold it).
+    if (loginEl) {
+      loginEl.style.setProperty("--lw", Math.round(Math.max(232, Math.min(300, 330 * s))) + "px");
+      loginEl.style.setProperty("--lx", Math.round(ax(352)) + "px");
+      loginEl.style.setProperty("--ly", Math.round(H < 520 ? H / 2 : Math.max(130, Math.min(H - 130, ay(160)))) + "px");
+    }
     for (var i = 0, n = Math.round(W * hz / 9000); i < n; i++) stars.push([rnd() * W, rnd() * hz * 0.96, 0.5 + rnd() * 0.9, rnd() * 6.283]);
     placeTree();
   }
@@ -279,7 +286,7 @@
   }
   function onDown(e) {
     idle = 0; ret = null;
-    if (e.target === contact) return;
+    if (e.target.closest && e.target.closest("a, button, form")) return;
     var w = overBody(e.clientX, e.clientY);
     if (w >= 0) {
       drag = w; grabOffset = body(w).a - skyAngle(e.clientX, e.clientY);
@@ -325,7 +332,7 @@
     // How fast the pointer is moving sideways, in artwork pixels per second. Speed is capped, so a
     // flick pushes no harder than a firm, steady sweep.
     var push = 0;
-    if (ptr.on && ptr.fresh) push = Math.max(-1300, Math.min(1300, (ptr.x - ptr.lx) / s / Math.max(dt, 0.008)));
+    if (ptr.on && ptr.fresh && loginP < 0.5) push = Math.max(-1300, Math.min(1300, (ptr.x - ptr.lx) / s / Math.max(dt, 0.008)));
     var reachX = 46 * s + 14, sub = dt > 0.02 ? 2 : 1, h = dt / sub;
     for (var pass = 0; pass < sub; pass++) {
       var prev = bones[0].lean, prevPart = bones[0].part;
@@ -550,6 +557,28 @@
     }
     ctx.globalAlpha = 1;
   }
+  // When the login form is open the canopy fills in behind it: one soft leaf-green shape that closes
+  // the gaps in the foliage, so the form always sits on leaves while the tree keeps its own outline.
+  function clearing() {
+    if (loginP < 0.01 || !loginEl) return;
+    var r = loginEl.getBoundingClientRect();
+    if (!r.width) return;
+    var e = loginP * loginP * (3 - 2 * loginP), pad = 16;
+    var w = (r.width + pad * 2) * e, h = (r.height + pad * 2) * e, l = r.left + r.width / 2 - w / 2, tp = r.top + r.height / 2 - h / 2;
+    var rad = Math.min(54, w / 2, h / 2);
+    ctx.fillStyle = rgb(pal.leaf);
+    ctx.beginPath();
+    ctx.moveTo(l + rad, tp);
+    ctx.arcTo(l + w, tp, l + w, tp + h, rad); ctx.arcTo(l + w, tp + h, l, tp + h, rad);
+    ctx.arcTo(l, tp + h, l, tp, rad); ctx.arcTo(l, tp, l + w, tp, rad);
+    ctx.closePath(); ctx.fill();
+  }
+  // A refused login: the canopy gives one slow shake, like a head saying no.
+  window.addEventListener("pepperhill:denied", function () {
+    if (calm) return;
+    for (var i = 0; i < bones.length; i++) bones[i].vel += 0.85;
+    crown.vel += 34;
+  });
   function draw(t, dt) {
     var sky = ctx.createLinearGradient(0, 0, 0, hz);
     sky.addColorStop(0, rgb(pal.skyTop)); sky.addColorStop(1, rgb(pal.skyBot));
@@ -623,6 +652,7 @@
     }
     prompt(t);
     label(dt);
+    clearing();
   }
 
   // ---------- loop ----------
@@ -655,6 +685,8 @@
       var g = calm ? 1 : Math.min(1, (now - born) / 2200);
       hour = (clockHour() - 1.5 * Math.pow(1 - g, 3) + 24) % 24;
     }
+    var wantLogin = loginEl && loginEl.classList.contains("open") ? 1 : 0;
+    loginP = calm ? wantLogin : loginP + (wantLogin - loginP) * Math.min(1, dt * 9);
     setPalette(hour);
     step(now / 1000, dt);
     pose(); poseLimbs();
